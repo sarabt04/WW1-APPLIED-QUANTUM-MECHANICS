@@ -1,0 +1,49 @@
+###############  PROPERTIES OF HYDROGENIC 1-ELECTRON STATES  ##################
+
+# 1. OG CODE (translated to phyton, by ChatGPT)------------------------------
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.special import genlaguerre, factorial
+
+#PARAMATERS
+Rmax = 50
+Nr = 2000
+Z = 1
+n = 1
+l = 0
+
+#RADIAL GRID
+r = np.linspace(0, Rmax, Nr)
+dr = r[1] - r[0]
+rho = 2 * Z / n * r
+
+#GENERALIZED LAGUERRE POLINOMIAL L_{n-l-1}^{2l+1}(rho)
+L = genlaguerre(n - l - 1, 2 * l + 1)(rho)
+
+#RADIAL WAVEFUNCTION (normalized hydrogenic)
+basf1 = (
+    L * rho**l * np.exp(-rho / 2)
+    * (2 * Z / n) ** (3/2)
+    * np.sqrt(factorial(n - l - 1) / (2 * n * factorial(n + l)))
+)
+
+#PLTOT RADIAL WAVEFUNCTION
+plt.figure(1)
+plt.plot(r, basf1, 'r--', label=f'n={n}, l={l}, Z={Z}')
+plt.xlabel("r")
+plt.ylabel("R(r)")
+plt.title("Hydrogenic Radial Wavefunction")
+plt.legend()
+
+#NORMALIZATION CHECK (∫|R(r)|^2 r^2 dr)
+norm = np.sum(basf1**2 * r**2) * dr
+print("Normalization integral:", norm)
+
+#PLOT PROBABILITY DENSITY (rR(r))^2
+plt.figure(2)
+plt.plot(r, (r * basf1)**2, 'r--', label=f'n={n}, l={l}, Z={Z}')
+plt.xlabel("r")
+plt.ylabel("Radial Probability Density")
+plt.title("Radial Probability Distribution")
+plt.legend()
+plt.show()
