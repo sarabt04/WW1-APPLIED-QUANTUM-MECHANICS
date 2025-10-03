@@ -26,7 +26,7 @@ K=-1/(2*delta_r**2)*K_old
 
 #Effective potential
 def Veff(r, Z, l):
-    return -Z/r+1/r-(Z+1/(r))*np.exp(-2*Z*r)+l*(l+1)
+    return -Z/r+1/r-(Z+1/(r))*np.exp(-2*Z*r)+l*(l+1)/(r**2)
 
 V=np.zeros((N,N))
 for i in range(0,N):
