@@ -1,0 +1,44 @@
+###################  A NAIVE MODEL FOR 2-ELECTRON ATOMS  ######################
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.linalg import eigh
+
+# 1. DISCRETITZATION  ---------------------------------------------------------
+R=50
+N=2000
+delta_r=R/N
+r=np.linspace(delta_r,R+delta_r,N)
+
+# 2. BUILD THE MATRICES  ------------------------------------------------------
+#Kinetic energy
+K_old=np.zeros((N, N))
+for i in range(0, N):
+    if i > 0:
+        K_old[i,i-1]=1
+        
+    K_old[i, i]=-2
+    
+    if i < N-1:
+        K_old[i,i+1]=1
+
+K=-1/(2*delta_r**2)*K_old
+
+
+#Effective potential
+def Veff(r, Z, l):
+    return -Z/r+1/r-((Z-5/16)+1/(r))*np.exp(-2*(Z-5/16)*r)+l*(l+1)/(r**2)
+
+V=np.zeros((N,N))
+for i in range(0,N):
+    V[i, i]=Veff(r[i],Z=1,l=0)
+  
+    
+#Final matrix
+A=K+V
+
+# 3. SOLUTION THE EIGENVALUES PROBLEM  ----------------------------------------
+#E, u = np.linalg.eigh(A)
+E, u = eigh(A)
+print("Energies:")
+print("1s:", E[0])
+print("2s:", E[1])
